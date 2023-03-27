@@ -18,6 +18,7 @@ const HeroesListItem = ({ id, name, description, element }) => {
     const onDeleteHero = (id) => {
         request(`http://localhost:3001/heroes/${id}`, 'DELETE')
             .then(() => dispatch(deleteHero(id)))
+            .catch(err => console.log(err))
     };
 
     switch (element) {
