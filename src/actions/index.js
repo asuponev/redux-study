@@ -56,3 +56,10 @@ export const deleteHero = (heroId) => {
         payload: heroId
     }
 }
+
+export const filterHeroes = (heroElement) => {
+    return {
+        type: 'FILTER_HEROES_SUCCESS',
+        payload: heroElement
+    }
+}
