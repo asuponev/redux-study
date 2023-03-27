@@ -31,6 +31,7 @@ const HeroesAddForm = () => {
         request("http://localhost:3001/filters")
             .then(data => dispatch(filtersFetched(data)))
             .catch(() => dispatch(filtersFetchingError()))
+        // eslint-disable-next-line
     }, [])
 
     const handleChange = (event) => {

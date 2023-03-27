@@ -39,6 +39,11 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 filters: ['Error: Failed to load filters'],
             }
+        case 'DELETE_HERO_SUCCESS':
+            return {
+                ...state,
+                heroes: state.heroes.filter(hero => hero.id !== action.payload),
+            }
         default: return state
     }
 }

@@ -49,3 +49,10 @@ export const filtersFetchingError = () => {
         type: 'FILTERS_FETCHING_ERROR'
     }
 }
+
+export const deleteHero = (heroId) => {
+    return {
+        type: 'DELETE_HERO_SUCCESS',
+        payload: heroId
+    }
+}
