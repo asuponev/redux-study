@@ -8,14 +8,15 @@
 // Элементы <option></option> желательно сформировать на базе
 // данных из фильтров
 
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useHttp } from '../../hooks/http.hook';
-import { createHeroSuccess, createHeroError } from '../../actions';
+import { createHeroSuccess, createHeroError, filtersFetched, filtersFetchingError } from '../../actions';
 
 const HeroesAddForm = () => {
+    const { filters } = useSelector(state => state);
     const dispatch = useDispatch();
     const { request } = useHttp();
 
@@ -26,9 +27,23 @@ const HeroesAddForm = () => {
         element: ''
     });
 
+    useEffect(() => {
+        request("http://localhost:3001/filters")
+            .then(data => dispatch(filtersFetched(data)))
+            .catch(() => dispatch(filtersFetchingError()))
+    }, [])
+
     const handleChange = (event) => {
         setValues(prev => ({ ...prev, [event.target.name]: event.target.value }));
     }
+
+    const selectOptions = filters.slice(1).map((filter, i) => {
+        return (
+            <option value={filter} key={i}>
+                {filter[0].toUpperCase() + filter.slice(1)}
+            </option>
+        )
+    });
 
     const formSubmit = (event) => {
         event.preventDefault();
@@ -85,10 +100,7 @@ const HeroesAddForm = () => {
                     onChange={handleChange}
                 >
                     <option value="">Select a hero element</option>
-                    <option value="fire">Fire</option>
-                    <option value="water">Water</option>
-                    <option value="wind">Wind</option>
-                    <option value="earth">Earth</option>
+                    {selectOptions}
                 </select>
             </div>
 

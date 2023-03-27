@@ -29,6 +29,16 @@ const reducer = (state = initialState, action) => {
             }
         case 'CREATE_HERO_ERROR':
             return state
+        case 'FILTERS_FETCHED':
+            return {
+                ...state,
+                filters: action.payload,
+            }
+        case 'FILTERS_FETCHING_ERROR':
+            return {
+                ...state,
+                filters: ['Error: Failed to load filters'],
+            }
         default: return state
     }
 }
