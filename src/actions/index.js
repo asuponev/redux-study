@@ -1,67 +1,48 @@
 import { createAction } from '@reduxjs/toolkit';
 
-// const heroesFetching = () => {
+export const heroesFetching = createAction('HEROES_FETCHING');
+
+export const heroesFetched = createAction('HEROES_FETCHED');
+
+export const heroesFetchingError = createAction('HEROES_FETCHING_ERROR');
+
+export const createHero = createAction('CREATE_HERO_SUCCESS');
+
+export const deleteHero = createAction('DELETE_HERO_SUCCESS');
+
+// const filtersFetching = () => {
 //     return {
-//         type: 'HEROES_FETCHING'
+//         type: 'FILTERS_FETCHING'
 //     }
 // }
 
-const heroesFetching = createAction('HEROES_FETCHING');
+export const filtersFetching = createAction('FILTERS_FETCHING');
 
-// const heroesFetched = (heroes) => {
+// const filtersFetched = (filters) => {
 //     return {
-//         type: 'HEROES_FETCHED',
-//         payload: heroes
+//         type: 'FILTERS_FETCHED',
+//         payload: filters
 //     }
 // }
 
-const heroesFetched = createAction('HEROES_FETCHED');
+export const filtersFetched = createAction('FILTERS_FETCHED');
 
-const heroesFetchingError = () => {
-    return {
-        type: 'HEROES_FETCHING_ERROR'
-    }
-}
+// const filtersFetchingError = () => {
+//     return {
+//         type: 'FILTERS_FETCHING_ERROR'
+//     }
+// }
 
-export const createHero = (hero) => {
-    return {
-        type: 'CREATE_HERO_SUCCESS',
-        payload: hero
-    }
-}
+export const filtersFetchingError = createAction('FILTERS_FETCHING_ERROR');
 
-export const deleteHero = (heroId) => {
-    return {
-        type: 'DELETE_HERO_SUCCESS',
-        payload: heroId
-    }
-}
+// export const currentFilterChanged = (heroElement) => {
+//     return {
+//         type: 'CURRENT_FILTER_CHANGED',
+//         payload: heroElement
+//     }
+// }
 
-const filtersFetching = () => {
-    return {
-        type: 'FILTERS_FETCHING'
-    }
-}
-
-const filtersFetched = (filters) => {
-    return {
-        type: 'FILTERS_FETCHED',
-        payload: filters
-    }
-}
-
-const filtersFetchingError = () => {
-    return {
-        type: 'FILTERS_FETCHING_ERROR'
-    }
-}
-
-export const currentFilterChanged = (heroElement) => {
-    return {
-        type: 'CURRENT_FILTER_CHANGED',
-        payload: heroElement
-    }
-}
+export const currentFilterChanged = createAction('CURRENT_FILTER_CHANGED');
 
 export const fetchHeroes = (request) => (dispatch) => {
     dispatch(heroesFetching());
