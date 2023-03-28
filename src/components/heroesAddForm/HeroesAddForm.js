@@ -9,19 +9,18 @@
 // данных из фильтров
 
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
-import { useHttp } from '../../hooks/http.hook';
 import store from '../../store';
-import { createHero } from '../heroesList/heroesSlice';
+import { useCreateHeroMutation } from '../../api/apiSlice';
 import { selectAll } from '../heroesFilters/filtersSlice';
 
 const HeroesAddForm = () => {
     const { filtersLoadingStatus } = useSelector(state => state.filters);
     const filters = selectAll(store.getState());
-    const dispatch = useDispatch();
-    const { request } = useHttp();
+
+    const [createHero] = useCreateHeroMutation();
 
     const [values, setValues] = useState({
         id: '',
@@ -42,7 +41,7 @@ const HeroesAddForm = () => {
         }
 
         if (filters && filters.length > 0) {
-            return filters.map(({name, label}) => {
+            return filters.map(({ name, label }) => {
                 // eslint-disable-next-line
                 if (name === 'all') return;
 
@@ -54,9 +53,9 @@ const HeroesAddForm = () => {
     const formSubmit = (event) => {
         event.preventDefault();
         values.id = uuidv4();
-        request("http://localhost:3001/heroes", 'POST', JSON.stringify(values))
-            .then(data => dispatch(createHero(data)))
-            .catch(err => console.log(err))
+
+        createHero(values).unwrap();
+
         setValues({
             id: '',
             name: '',

@@ -4,22 +4,18 @@
 // Удаление идет и с json файла при помощи метода DELETE
 
 import React from 'react';
-import { useDispatch } from 'react-redux';
 
-import { useHttp } from '../../hooks/http.hook';
-import { deleteHero } from '../heroesList/heroesSlice';
+import { useDeleteHeroMutation } from '../../api/apiSlice';
 
 const HeroesListItem = ({ id, name, description, element }) => {
-    const dispatch = useDispatch();
-    const { request } = useHttp();
 
-    let elementClassName;
+    const [deleteHero] = useDeleteHeroMutation();
 
     const onDeleteHero = (id) => {
-        request(`http://localhost:3001/heroes/${id}`, 'DELETE')
-            .then(() => dispatch(deleteHero(id)))
-            .catch(err => console.log(err))
+        deleteHero(id);
     };
+
+    let elementClassName;
 
     switch (element) {
         case 'fire':
