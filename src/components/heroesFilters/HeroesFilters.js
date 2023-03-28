@@ -10,7 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
 import { useHttp } from '../../hooks/http.hook';
-import { fetchFilters, currentFilterChanged } from '../../actions';
+import { fetchFilters } from '../../actions';
+import { currentFilterChanged } from './filtersSlice';
 import Spinner from '../spinner/Spinner';
 
 const HeroesFilters = () => {
