@@ -1,15 +1,21 @@
-const heroesFetching = () => {
-    return {
-        type: 'HEROES_FETCHING'
-    }
-}
+import { createAction } from '@reduxjs/toolkit';
 
-const heroesFetched = (heroes) => {
-    return {
-        type: 'HEROES_FETCHED',
-        payload: heroes
-    }
-}
+// const heroesFetching = () => {
+//     return {
+//         type: 'HEROES_FETCHING'
+//     }
+// }
+
+const heroesFetching = createAction('HEROES_FETCHING');
+
+// const heroesFetched = (heroes) => {
+//     return {
+//         type: 'HEROES_FETCHED',
+//         payload: heroes
+//     }
+// }
+
+const heroesFetched = createAction('HEROES_FETCHED');
 
 const heroesFetchingError = () => {
     return {
