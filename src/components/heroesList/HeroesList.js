@@ -20,7 +20,7 @@ const HeroesList = () => {
             .then(data => dispatch(heroesFetched(data)))
             .catch(() => dispatch(heroesFetchingError()))
         // eslint-disable-next-line
-    }, []);
+    }, [currentFilter]);
 
     if (heroesLoadingStatus === "loading") {
         return <Spinner />;
