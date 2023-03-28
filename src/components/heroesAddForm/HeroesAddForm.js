@@ -8,15 +8,15 @@
 // Элементы <option></option> желательно сформировать на базе
 // данных из фильтров
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useHttp } from '../../hooks/http.hook';
-import { createHeroSuccess, createHeroError, filtersFetched, filtersFetchingError } from '../../actions';
+import { createHero } from '../../actions';
 
 const HeroesAddForm = () => {
-    const { filters } = useSelector(state => state);
+    const { filters, filtersLoadingStatus } = useSelector(state => state.filters);
     const dispatch = useDispatch();
     const { request } = useHttp();
 
@@ -27,31 +27,33 @@ const HeroesAddForm = () => {
         element: ''
     });
 
-    useEffect(() => {
-        request("http://localhost:3001/filters")
-            .then(data => dispatch(filtersFetched(data)))
-            .catch(() => dispatch(filtersFetchingError()))
-        // eslint-disable-next-line
-    }, [])
-
     const handleChange = (event) => {
         setValues(prev => ({ ...prev, [event.target.name]: event.target.value }));
     }
 
-    const selectOptions = filters.slice(1).map((filter, i) => {
-        return (
-            <option value={filter} key={i}>
-                {filter[0].toUpperCase() + filter.slice(1)}
-            </option>
-        )
-    });
+    const renderFilters = (filters, status) => {
+        if (status === "loading") {
+            return <option>Loading elements</option>
+        } else if (status === "error") {
+            return <option>Loading error</option>
+        }
+
+        if (filters && filters.length > 0) {
+            return filters.map(({name, label}) => {
+                // eslint-disable-next-line
+                if (name === 'all') return;
+
+                return <option key={name} value={name}>{label}</option>
+            })
+        }
+    }
 
     const formSubmit = (event) => {
         event.preventDefault();
         values.id = uuidv4();
         request("http://localhost:3001/heroes", 'POST', JSON.stringify(values))
-            .then(data => dispatch(createHeroSuccess(data)))
-            .catch(() => dispatch(createHeroError()))
+            .then(data => dispatch(createHero(data)))
+            .catch(err => console.log(err))
         setValues({
             id: '',
             name: '',
@@ -101,7 +103,7 @@ const HeroesAddForm = () => {
                     onChange={handleChange}
                 >
                     <option value="">Select a hero element</option>
-                    {selectOptions}
+                    {renderFilters(filters, filtersLoadingStatus)}
                 </select>
             </div>
 

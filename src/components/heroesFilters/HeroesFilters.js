@@ -5,44 +5,62 @@
 // Изменять json-файл для удобства МОЖНО!
 // Представьте, что вы попросили бэкенд-разработчика об этом
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import classNames from 'classnames';
 
-import { filterHeroes } from '../../actions';
+import { useHttp } from '../../hooks/http.hook';
+import { filtersFetching, filtersFetched, filtersFetchingError, currentFilterChanged } from '../../actions';
+import Spinner from '../spinner/Spinner';
 
 const HeroesFilters = () => {
-    const { filters } = useSelector(state => state);
+    const { filters, filtersLoadingStatus, currentFilter } = useSelector(state => state.filters);
     const dispatch = useDispatch();
+    const { request } = useHttp();
 
-    const setClassName = (element) => {
-        switch (element) {
-            case 'fire':
-                return 'btn btn-danger';
-            case 'water':
-                return 'btn btn-primary';
-            case 'wind':
-                return 'btn btn-success';
-            case 'earth':
-                return 'btn btn-secondary';
-            default:
-                return 'btn btn-outline-dark active';
-        }
+    useEffect(() => {
+        dispatch(filtersFetching());
+        request("http://localhost:3001/filters")
+            .then(data => dispatch(filtersFetched(data)))
+            .catch(() => dispatch(filtersFetchingError()))
+        // eslint-disable-next-line
+    }, []);
+
+    if (filtersLoadingStatus === "loading") {
+        return <Spinner />;
+    } else if (filtersLoadingStatus === "error") {
+        return <h5 className="text-center mt-5">Loading error</h5>
     }
 
-    const renderFilters = filters.map((element, i) => {
-        return (
-            <button className={setClassName(element)} key={i} onClick={() => dispatch(filterHeroes(element))}>
-                {element[0].toUpperCase() + element.slice(1)}
-            </button>
-        )
-    });
+    const renderFilters = (arr) => {
+        if (arr.length === 0) {
+            return <h5 className="text-center mt-5">Filters not found</h5>
+        }
+
+        return arr.map(({ name, className, label }) => {
+
+            const btnClass = classNames('btn', className, {
+                'active': name === currentFilter
+            });
+
+            return (
+                <button
+                    key={name}
+                    className={btnClass}
+                    onClick={() => dispatch(currentFilterChanged(name))}
+                >{label}</button>
+            )
+        });
+    };
+
+    const elements = renderFilters(filters);
 
     return (
         <div className="card shadow-lg mt-4">
             <div className="card-body">
                 <p className="card-text">Filter heroes by element</p>
                 <div className="btn-group">
-                    {renderFilters}
+                    {elements}
                 </div>
             </div>
         </div>

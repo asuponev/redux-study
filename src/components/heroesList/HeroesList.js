@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { createSelector } from 'reselect';
 
 import { useHttp } from '../../hooks/http.hook';
 import { heroesFetching, heroesFetched, heroesFetchingError } from '../../actions';
@@ -10,7 +11,14 @@ import Spinner from '../spinner/Spinner';
 import './heroesList.scss';
 
 const HeroesList = () => {
-    const { heroes, heroesLoadingStatus, currentFilter } = useSelector(state => state);
+    const filteredHeroesSelector = createSelector(
+        (state) => state.filters.currentFilter,
+        (state) => state.heroes.heroes,
+        (filter, heroes) => filter === 'all' ? heroes : heroes.filter(hero => hero.element === filter)
+    );
+    const filteredHeroes = useSelector(filteredHeroesSelector);
+    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
+
     const dispatch = useDispatch();
     const { request } = useHttp();
 
@@ -20,7 +28,7 @@ const HeroesList = () => {
             .then(data => dispatch(heroesFetched(data)))
             .catch(() => dispatch(heroesFetchingError()))
         // eslint-disable-next-line
-    }, [currentFilter]);
+    }, []);
 
     if (heroesLoadingStatus === "loading") {
         return <Spinner />;
@@ -43,11 +51,10 @@ const HeroesList = () => {
                 </CSSTransition>
             )
         })
-    }
+    };
 
-    const filterHeroes = currentFilter === 'all' ? heroes : heroes.filter(hero => hero.element === currentFilter)
+    const elements = renderHeroesList(filteredHeroes);
 
-    const elements = renderHeroesList(filterHeroes);
     return (
         <TransitionGroup component="ul">
             {elements}
